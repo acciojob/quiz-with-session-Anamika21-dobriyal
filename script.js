@@ -4,7 +4,7 @@ const questionsElement = document.getElementById("questions");
 const submitButton = document.getElementById("submit");
 const scoreElement = document.getElementById("score");
 
-// Retrieve saved answers and score from sessionStorage and localStorage
+// Retrieve saved answers from sessionStorage
 let userAnswers = JSON.parse(sessionStorage.getItem("progress")) || {};
 
 // Display saved score if present
@@ -15,7 +15,7 @@ if (savedScore !== null) {
 
 // Display the quiz questions and choices
 function renderQuestions() {
-  questionsElement.innerHTML = ""; // Clear questions on re-render
+  questionsElement.innerHTML = ""; // Clear previous questions
 
   questions.forEach((question, i) => {
     const questionElement = document.createElement("div");
@@ -23,7 +23,7 @@ function renderQuestions() {
     questionText.textContent = question.question;
     questionElement.appendChild(questionText);
 
-    // Create radio buttons for choices
+    // Create radio buttons for each choice
     question.choices.forEach((choice) => {
       const choiceElement = document.createElement("input");
       choiceElement.setAttribute("type", "radio");
@@ -32,7 +32,8 @@ function renderQuestions() {
 
       // Retain the previously selected option from sessionStorage
       if (userAnswers[i] === choice) {
-        choiceElement.setAttribute("checked", true);
+        choiceElement.checked = true;
+        choiceElement.setAttribute("checked", "true");  // Explicitly set the checked attribute
       }
 
       const choiceLabel = document.createElement("label");
@@ -40,6 +41,7 @@ function renderQuestions() {
 
       questionElement.appendChild(choiceElement);
       questionElement.appendChild(choiceLabel);
+      questionElement.appendChild(document.createElement("br"));  // Add a line break for better spacing
     });
 
     questionsElement.appendChild(questionElement);
@@ -52,6 +54,9 @@ function saveProgress() {
   inputs.forEach((input) => {
     const questionIndex = input.getAttribute("name").split("-")[1];
     userAnswers[questionIndex] = input.value;
+
+    // Explicitly set the checked attribute
+    input.setAttribute("checked", "true");
   });
   sessionStorage.setItem("progress", JSON.stringify(userAnswers));
 }
@@ -77,6 +82,10 @@ submitButton.addEventListener("click", () => {
   saveProgress();
   calculateScore();
 });
+
+// Render questions on page load
+renderQuestions();
+
 
 
 
