@@ -83,8 +83,8 @@ submitButton.addEventListener("click", () => {
   calculateScore();
 });
 
-// Render questions on page load
-renderQuestions();
+
+
 
 
 
